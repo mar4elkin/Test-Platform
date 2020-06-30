@@ -11,15 +11,22 @@ public class PlayerControl : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.A))
         {
+            //Go right
             rb.velocity = new Vector2(-5, rb.velocity.y);
+            //Sprite flipping
+            transform.localScale = new Vector2(-1, 1);
         }
         if (Input.GetKey(KeyCode.D))
         {
+            //Go left
             rb.velocity = new Vector2(5, rb.velocity.y);
+            //Sprite flipping
+            transform.localScale = new Vector2(1, 1);
         }
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            rb.velocity = new Vector2(0, 5);
+            //Jump
+            rb.velocity = new Vector2(rb.velocity.x, 10f);
         }
     }
 }
