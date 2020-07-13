@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     public Rigidbody2D rb;
+    public Animator anim;
 
     // Update is called once per frame
     private void Update()
@@ -15,13 +16,23 @@ public class PlayerControl : MonoBehaviour
             rb.velocity = new Vector2(-5, rb.velocity.y);
             //Sprite flipping
             transform.localScale = new Vector2(-1, 1);
+            //Running animation
+            anim.SetBool("running", true);
         }
-        if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
             //Go left
             rb.velocity = new Vector2(5, rb.velocity.y);
             //Sprite flipping
             transform.localScale = new Vector2(1, 1);
+            //Running animation
+            anim.SetBool("running", true);
+        }
+
+        else
+        {
+            //Running animation stop
+            anim.SetBool("running", false);
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
