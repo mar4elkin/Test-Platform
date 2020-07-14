@@ -7,6 +7,8 @@ public class PlayerControl : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Animator anim;
+    public LayerMask groundLayer;
+
 
     private void Start()
     {
@@ -17,8 +19,29 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        float hDirection = Input.GetAxis("Horizontal");
 
+        bool IsGrounded()
+        {
+            //Это маленький костыль
+            Vector2 brokenVector = new Vector2(0.0F, 0.2F);
+            Vector2 position = transform.position;
+            position = position - brokenVector;
+            Vector2 direction = Vector2.down;
+            float distance = 1.0f;
+
+            Debug.DrawRay(position, direction, Color.green);
+            RaycastHit2D hit = Physics2D.Raycast(position, direction, distance, groundLayer);
+            if (hit.collider != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        Debug.Log("IsGrounded: " + IsGrounded());
+
+        float hDirection = Input.GetAxis("Horizontal");
 
         if (hDirection < 0)
         {
@@ -46,8 +69,13 @@ public class PlayerControl : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.W))
         {
-            //Jump
-            rb.velocity = new Vector2(rb.velocity.x, 10f);
+            if (IsGrounded() == true) 
+            {
+                //Jump
+                rb.velocity = new Vector2(rb.velocity.x, 10f);
+            }
+            
+            
         }
     }
 }
