@@ -13,11 +13,16 @@ public class PlayerControl : MonoBehaviour
     private enum State { idle, running, jumping};
     private State state = State.idle;
 
+    //загрузчик сцены
+    public SceneLoader sceneLoader;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
+        //некая ссылка на SceneLoader
+        sceneLoader = FindObjectOfType<SceneLoader>();
     }
 
     // Update is called once per frame
@@ -102,6 +107,18 @@ public class PlayerControl : MonoBehaviour
         else
         {
             state = State.idle;
+        }
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "enemy")
+        {
+            sceneLoader.LoadScene(0);
+        }
+        if (collision.gameObject.tag == "Friend")
+        {
+            Debug.Log("Friend");
         }
     }
 }
