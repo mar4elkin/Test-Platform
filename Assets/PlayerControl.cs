@@ -1,16 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public Rigidbody2D rb;
-    public Animator anim;
+    private Rigidbody2D rb;
+    private Animator anim;
+
+    private void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+    }
 
     // Update is called once per frame
     private void Update()
     {
-        if (Input.GetKey(KeyCode.A))
+        float hDirection = Input.GetAxis("Horizontal");
+
+
+        if (hDirection < 0)
         {
             //Go right
             rb.velocity = new Vector2(-5, rb.velocity.y);
@@ -19,7 +29,7 @@ public class PlayerControl : MonoBehaviour
             //Running animation
             anim.SetBool("running", true);
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (hDirection > 0)
         {
             //Go left
             rb.velocity = new Vector2(5, rb.velocity.y);
