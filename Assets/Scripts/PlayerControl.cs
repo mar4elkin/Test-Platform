@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+
 using System.Threading;
 using UnityEngine;
 
@@ -8,6 +10,8 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     public LayerMask groundLayer;
+    private enum State { idle, running, jumping};
+    private State state = State.idle;
 
 
     private void Start()
@@ -43,6 +47,8 @@ public class PlayerControl : MonoBehaviour
 
         float hDirection = Input.GetAxis("Horizontal");
 
+
+
         if (hDirection < 0)
         {
             //Go right
@@ -67,15 +73,35 @@ public class PlayerControl : MonoBehaviour
             //Running animation stop
             anim.SetBool("running", false);
         }
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetButtonDown("Jump"))
         {
             if (IsGrounded() == true) 
             {
                 //Jump
                 rb.velocity = new Vector2(rb.velocity.x, 10f);
+                state = State.jumping;
             }
-            
-            
+
+            VeolcityState();
+            anim.SetInteger("state", (int)state);
+        }
+    }
+
+    private void VeolcityState()
+    {
+        if(state == State.jumping)
+        {
+            //Moving
+            state = State.running;
+        }
+
+        else if (Mathf.Abs(rb.velocity.x) > 2f)
+        {
+
+        }
+        else
+        {
+            state = State.idle;
         }
     }
 }
