@@ -7,11 +7,16 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
+    //Start varibels
     private Rigidbody2D rb;
     private Animator anim;
     public LayerMask groundLayer;
     private enum State { idle, running, jumping, falling};
     private State state = State.idle;
+
+    //Hero params
+    [SerializeField] private float speed = 10f;
+    [SerializeField] private float JumpForce = 10f;
 
     //загрузчик сцены
     public SceneLoader sceneLoader;
@@ -25,43 +30,49 @@ public class PlayerControl : MonoBehaviour
         sceneLoader = FindObjectOfType<SceneLoader>();
     }
 
-    // Update is called once per frame
     private void Update()
     {
+        InputManager();
 
 
+        VeolcityState();
+        anim.SetInteger("state", (int)state); // Set animation based on Enumerator state
+    }
+
+    public void InputManager()
+    {
         float hDirection = Input.GetAxis("Horizontal");
 
 
-
+        //Right movement
         if (hDirection < 0)
         {
-            //Go right
-            rb.velocity = new Vector2(-5, rb.velocity.y);
+            rb.velocity = new Vector2(-speed, rb.velocity.y);
             //Sprite flipping
             transform.localScale = new Vector2(-1, 1);
         }
+
+        //Left movement
         else if (hDirection > 0)
         {
-            //Go left
-            rb.velocity = new Vector2(5, rb.velocity.y);
+            rb.velocity = new Vector2(speed, rb.velocity.y);
             //Sprite flipping
             transform.localScale = new Vector2(1, 1);
         }
 
+        //Jumping
         if (Input.GetButtonDown("Jump"))
         {
             if (IsGrounded() == true) 
             {
-                //Jump
-
-                rb.velocity = new Vector2(rb.velocity.x, 10f);
+                rb.velocity = new Vector2(rb.velocity.x, JumpForce);
                 state = State.jumping;
             }
         }
-        VeolcityState();
-        anim.SetInteger("state", (int)state);
+
     }
+
+
 
     //Checking if Hero is grounded (true or false)
     public bool IsGrounded()
