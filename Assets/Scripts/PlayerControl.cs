@@ -10,7 +10,7 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     public LayerMask groundLayer;
-    private enum State { idle, running, jumping};
+    private enum State { idle, running, jumping, falling};
     private State state = State.idle;
 
     //загрузчик сцены
@@ -29,26 +29,6 @@ public class PlayerControl : MonoBehaviour
     private void Update()
     {
 
-        bool IsGrounded()
-        {
-            //Это маленький костыль
-            Vector2 brokenVector = new Vector2(0.0F, 0.2F);
-            Vector2 position = transform.position;
-            position = position - brokenVector;
-            Vector2 direction = Vector2.down;
-            float distance = 1.0f;
-
-            Debug.DrawRay(position, direction, Color.green);
-            RaycastHit2D hit = Physics2D.Raycast(position, direction, distance, groundLayer);
-            if (hit.collider != null)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        Debug.Log("IsGrounded: " + IsGrounded());
 
         float hDirection = Input.GetAxis("Horizontal");
 
@@ -60,8 +40,6 @@ public class PlayerControl : MonoBehaviour
             rb.velocity = new Vector2(-5, rb.velocity.y);
             //Sprite flipping
             transform.localScale = new Vector2(-1, 1);
-            //Running animation
-            anim.SetBool("running", true);
         }
         else if (hDirection > 0)
         {
@@ -69,40 +47,65 @@ public class PlayerControl : MonoBehaviour
             rb.velocity = new Vector2(5, rb.velocity.y);
             //Sprite flipping
             transform.localScale = new Vector2(1, 1);
-            //Running animation
-            anim.SetBool("running", true);
         }
 
-        else
-        {
-            //Running animation stop
-            anim.SetBool("running", false);
-        }
         if (Input.GetButtonDown("Jump"))
         {
             if (IsGrounded() == true) 
             {
                 //Jump
+
                 rb.velocity = new Vector2(rb.velocity.x, 10f);
                 state = State.jumping;
             }
-
-            VeolcityState();
-            anim.SetInteger("state", (int)state);
         }
+        VeolcityState();
+        anim.SetInteger("state", (int)state);
     }
 
+    //Checking if Hero is grounded (true or false)
+    public bool IsGrounded()
+    {
+        //Это маленький костыль
+        Vector2 brokenVector = new Vector2(0.0F, 0.2F);
+        Vector2 position = transform.position;
+        position = position - brokenVector;
+        Vector2 direction = Vector2.down;
+        float distance = 1.0f;
+
+        Debug.DrawRay(position, direction, Color.green);
+        RaycastHit2D hit = Physics2D.Raycast(position, direction, distance, groundLayer);
+        if (hit.collider != null)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    //Checking state changes
     private void VeolcityState()
     {
-        if(state == State.jumping)
+        Debug.Log("State " + state);
+        if (state == State.jumping)
         {
-            //Moving
-            state = State.running;
+            if (rb.velocity.y < 1f)
+            {
+                state = State.falling;
+            }
+        }
+
+        else if(state == State.falling)
+        {
+            if (IsGrounded())
+            {
+                state = State.idle;
+            }
         }
 
         else if (Mathf.Abs(rb.velocity.x) > 2f)
         {
-
+            state = State.running;
         }
         else
         {
@@ -110,6 +113,7 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    //Enemy test
     public void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "enemy")

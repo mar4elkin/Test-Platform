@@ -3017,6 +3017,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
+  sceneLoader: {fileID: 0}
 --- !u!95 &1976010165
 Animator:
   serializedVersion: 3
