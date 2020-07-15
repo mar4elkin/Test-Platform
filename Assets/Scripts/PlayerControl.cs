@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Globalization;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -14,9 +15,12 @@ public class PlayerControl : MonoBehaviour
     private enum State { idle, running, jumping, falling};
     private State state = State.idle;
 
+
     //Hero params
     [SerializeField] private float speed = 10f;
     [SerializeField] private float JumpForce = 10f;
+    [SerializeField] private int cherries = 0;
+    [SerializeField] private Text cherryText;
 
     //загрузчик сцены
     public SceneLoader sceneLoader;
@@ -37,6 +41,16 @@ public class PlayerControl : MonoBehaviour
 
         VeolcityState();
         anim.SetInteger("state", (int)state); // Set animation based on Enumerator state
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Collectable")
+        {
+            Destroy(collision.gameObject);
+            cherries += 1;
+            cherryText.text = cherries.ToString();
+        }
     }
 
     public void InputManager()
@@ -97,7 +111,6 @@ public class PlayerControl : MonoBehaviour
     //Checking state changes
     private void VeolcityState()
     {
-        Debug.Log("State " + state);
         if (state == State.jumping)
         {
             if (rb.velocity.y < 1f)
