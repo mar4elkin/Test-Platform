@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +13,7 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     public LayerMask groundLayer;
-    private enum State { idle, running, jumping, falling};
+    private enum State { idle, running, jumping, falling, hurt};
     private State state = State.idle;
 
 
@@ -21,6 +22,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float JumpForce = 10f;
     [SerializeField] private int cherries = 0;
     [SerializeField] private Text cherryText;
+    [SerializeField] private float hurtforce = 10f;
 
     //загрузчик сцены
     public SceneLoader sceneLoader;
@@ -36,7 +38,10 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
-        InputManager();
+        if(state != State.hurt)
+        {
+            InputManager();
+        }
 
 
         VeolcityState();
@@ -50,6 +55,32 @@ public class PlayerControl : MonoBehaviour
             Destroy(collision.gameObject);
             cherries += 1;
             cherryText.text = cherries.ToString();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if(other.gameObject.tag == "EnemyNew")
+        {
+            if (state == State.falling)
+            {
+                Destroy(other.gameObject);
+                Jump();
+            }
+            else
+            {
+                state = State.hurt;
+                if(other.gameObject.transform.position.x > transform.position.x)
+                {
+                    //Enemy is to my right, I should be damaged and moved left
+                    rb.velocity = new Vector2(-hurtforce, rb.velocity.y);
+                }
+                else
+                {
+                    //Enemy is to my left, I should be damaged and moved right
+                    rb.velocity = new Vector2(hurtforce, rb.velocity.y);
+                }
+            }
         }
     }
 
@@ -75,13 +106,9 @@ public class PlayerControl : MonoBehaviour
         }
 
         //Jumping
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && IsGrounded())
         {
-            if (IsGrounded() == true) 
-            {
-                rb.velocity = new Vector2(rb.velocity.x, JumpForce);
-                state = State.jumping;
-            }
+            Jump();
         }
 
     }
@@ -127,6 +154,14 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
+        else if(state == State.hurt)
+        {
+            if(Mathf.Abs(rb.velocity.x) < .1f)
+            {
+                state = State.idle;
+            }
+        }
+
         else if (Mathf.Abs(rb.velocity.x) > 2f)
         {
             state = State.running;
@@ -137,16 +172,23 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    //Enemy test
-    public void OnCollisionEnter2D(Collision2D collision)
+    private void Jump()
     {
-        if (collision.gameObject.tag == "enemy")
-        {
-            sceneLoader.LoadScene(0);
-        }
-        if (collision.gameObject.tag == "Friend")
-        {
-            Debug.Log("Friend");
-        }
+        rb.velocity = new Vector2(rb.velocity.x, JumpForce);
+        state = State.jumping;
     }
+
+
+    //Enemy test
+    //public void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.tag == "enemy")
+    //    {
+    //        sceneLoader.LoadScene(0);
+    //    }
+    //    if (collision.gameObject.tag == "Friend")
+    //    {
+    //        Debug.Log("Friend");
+    //    }
+    //}
 }
