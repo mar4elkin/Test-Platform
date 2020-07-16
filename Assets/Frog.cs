@@ -96,6 +96,16 @@ public class Frog : MonoBehaviour
         }
     }
 
+    public void JumpedOn()
+    {
+        anim.SetTrigger("Death");
+    }
+
+    private void Death()
+    {
+        Destroy(this.gameObject);
+    }
+
     //Checking if Hero is grounded (true or false)
     public bool IsGrounded()
     {
