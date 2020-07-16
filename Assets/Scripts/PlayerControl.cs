@@ -82,6 +82,15 @@ public class PlayerControl : MonoBehaviour
                 }
             }
         }
+
+        if (other.gameObject.tag == "enemy")
+        {
+            sceneLoader.LoadScene(0);
+        }
+        if (other.gameObject.tag == "Friend")
+        {
+            Debug.Log("Friend");
+        }
     }
 
     public void InputManager()
@@ -180,15 +189,15 @@ public class PlayerControl : MonoBehaviour
 
 
     //Enemy test
-    //public void OnCollisionEnter2D(Collision2D collision)
+   // public void OnCollisionEnter2D(Collision2D collision)
     //{
-    //    if (collision.gameObject.tag == "enemy")
-    //    {
-    //        sceneLoader.LoadScene(0);
-    //    }
-    //    if (collision.gameObject.tag == "Friend")
-    //    {
-    //        Debug.Log("Friend");
-    //    }
-    //}
+       // if (collision.gameObject.tag == "enemy")
+       // {
+       //     sceneLoader.LoadScene(0);
+       // }
+       // if (collision.gameObject.tag == "Friend")
+       // {
+       //     Debug.Log("Friend");
+       // }
+   // }
 }
