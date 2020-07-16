@@ -13,23 +13,44 @@ public class Frog : MonoBehaviour
     [SerializeField] private float jumpLength = 10f;
     [SerializeField] private float jumpHeight = 15f;
     private Rigidbody2D rb;
+    private Animator anim;
 
     private bool facingLeft = true;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
     {
+        //Transition from Jump to Fall
+        if (anim.GetBool("Jumping"))
+        {
+            if(rb.velocity.y < .1)
+            {
+                anim.SetBool("Falling", true);
+                anim.SetBool("Jumping", false);
+            }
+        }
+
+        //Transition from Fall to idle
+        if (IsGrounded() && anim.GetBool("Falling"))
+        {
+            anim.SetBool("Falling", false);
+        }
+    }
+
+    public void Move()
+    {
         if (facingLeft)
         {
             //test to see if we are beyond left cap
-            if(transform.position.x > leftCap)
+            if (transform.position.x > leftCap)
             {
                 //Sprite facing check and flipping
-                if(transform.localScale.x != 1)
+                if (transform.localScale.x != 1)
                 {
                     transform.localScale = new Vector3(1, 1);
                 }
@@ -39,6 +60,7 @@ public class Frog : MonoBehaviour
                 {
                     //Jump
                     rb.velocity = new Vector2(-jumpLength, jumpHeight);
+                    anim.SetBool("Jumping", true);
                 }
             }
             else
@@ -64,6 +86,7 @@ public class Frog : MonoBehaviour
                 {
                     //Jump
                     rb.velocity = new Vector2(jumpLength, jumpHeight);
+                    anim.SetBool("Jumping", true);
                 }
             }
             else
