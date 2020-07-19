@@ -12,14 +12,12 @@ public class Frog : Enemy
 
     [SerializeField] private float jumpLength = 10f;
     [SerializeField] private float jumpHeight = 15f;
-    private Rigidbody2D rb;
 
     private bool facingLeft = true;
 
     protected override void Start()
     {
         base.Start();
-        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
