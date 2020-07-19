@@ -23,29 +23,33 @@ public class MovingSystemScripts : MonoBehaviour
     
     void Update()
     {
-        if (obj.position == targetPoint.position)
+        if (obj)
         {
-            if(forward)
-                сurrentPoint++;
-            else
-                сurrentPoint--;
-
-            if (сurrentPoint >= points.Length && cycle)
-                сurrentPoint = 0;
-            else if(сurrentPoint >= points.Length && !cycle)
+            if (obj.position == targetPoint.position)
             {
-                forward = false;
-                сurrentPoint = points.Length - 2;
-            }
-            else if(сurrentPoint < 0)
-            {
-                forward = true;
-                сurrentPoint = 1;
+                if (forward)
+                    сurrentPoint++;
+                else
+                    сurrentPoint--;
+
+                if (сurrentPoint >= points.Length && cycle)
+                    сurrentPoint = 0;
+                else if (сurrentPoint >= points.Length && !cycle)
+                {
+                    forward = false;
+                    сurrentPoint = points.Length - 2;
+                }
+                else if (сurrentPoint < 0)
+                {
+                    forward = true;
+                    сurrentPoint = 1;
+                }
+
+                targetPoint = points[сurrentPoint];
             }
 
-            targetPoint = points[сurrentPoint];
+            obj.position = Vector3.MoveTowards(obj.position, targetPoint.position, speed * Time.deltaTime);
         }
 
-        obj.position = Vector3.MoveTowards(obj.position, targetPoint.position, speed * Time.deltaTime);
     }
 }
