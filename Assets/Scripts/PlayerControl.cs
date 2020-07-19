@@ -62,10 +62,10 @@ public class PlayerControl : MonoBehaviour
     {
         if(other.gameObject.tag == "EnemyNew")
         {
-            Frog frog = other.gameObject.GetComponent<Frog>();
+            Enemy enemy = other.gameObject.GetComponent<Enemy>();
             if (state == State.falling)
             {
-                frog.JumpedOn();
+                enemy.JumpedOn();
                 Jump();
             }
             else

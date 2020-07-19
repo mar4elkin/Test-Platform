@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 
-public class Frog : MonoBehaviour
+public class Frog : Enemy
 {
 
     [SerializeField] private float leftCap;
@@ -13,14 +13,13 @@ public class Frog : MonoBehaviour
     [SerializeField] private float jumpLength = 10f;
     [SerializeField] private float jumpHeight = 15f;
     private Rigidbody2D rb;
-    private Animator anim;
 
     private bool facingLeft = true;
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -96,15 +95,6 @@ public class Frog : MonoBehaviour
         }
     }
 
-    public void JumpedOn()
-    {
-        anim.SetTrigger("Death");
-    }
-
-    private void Death()
-    {
-        Destroy(this.gameObject);
-    }
 
     //Checking if Hero is grounded (true or false)
     public bool IsGrounded()
