@@ -12,6 +12,7 @@ public class PlayerControl : MonoBehaviour
     //Start varibels
     private Rigidbody2D rb;
     private Animator anim;
+    private AudioSource footstep;
     public LayerMask groundLayer;
     private enum State { idle, running, jumping, falling, hurt};
     private State state = State.idle;
@@ -31,6 +32,7 @@ public class PlayerControl : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        footstep = GetComponent<AudioSource>();
 
         //некая ссылка на SceneLoader
         sceneLoader = FindObjectOfType<SceneLoader>();
@@ -186,6 +188,11 @@ public class PlayerControl : MonoBehaviour
     {
         rb.velocity = new Vector2(rb.velocity.x, JumpForce);
         state = State.jumping;
+    }
+
+    private void Footstep()
+    {
+        footstep.Play();
     }
 
 
