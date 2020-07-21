@@ -12,7 +12,6 @@ public class PlayerControl : MonoBehaviour
     //Start varibels
     private Rigidbody2D rb;
     private Animator anim;
-    private AudioSource footstep;
     public LayerMask groundLayer;
     private enum State { idle, running, jumping, falling, hurt};
     private State state = State.idle;
@@ -24,6 +23,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private int cherries = 0;
     [SerializeField] private Text cherryText;
     [SerializeField] private float hurtforce = 10f;
+    [SerializeField] private AudioSource cherry;
+    [SerializeField] private AudioSource footstep;
 
     //загрузчик сцены
     public SceneLoader sceneLoader;
@@ -32,7 +33,6 @@ public class PlayerControl : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        footstep = GetComponent<AudioSource>();
 
         //некая ссылка на SceneLoader
         sceneLoader = FindObjectOfType<SceneLoader>();
@@ -54,6 +54,7 @@ public class PlayerControl : MonoBehaviour
     {
         if(collision.tag == "Collectable")
         {
+            cherry.Play();
             Destroy(collision.gameObject);
             cherries += 1;
             cherryText.text = cherries.ToString();
@@ -158,6 +159,11 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
+        else if(state != State.jumping && !IsGrounded())
+        {
+            state = State.falling;
+        }
+
         else if(state == State.falling)
         {
             if (IsGrounded())
@@ -174,7 +180,7 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        else if (Mathf.Abs(rb.velocity.x) > 2f)
+        else if (Mathf.Abs(rb.velocity.x) > 2f && IsGrounded())
         {
             state = State.running;
         }
