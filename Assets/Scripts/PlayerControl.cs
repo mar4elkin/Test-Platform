@@ -15,7 +15,7 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     public LayerMask groundLayer;
-    private enum State { idle, running, jumping, falling, hurt};
+    private enum State { idle, running, jumping, falling, hurt };
     private State state = State.idle;
 
 
@@ -128,6 +128,7 @@ public class PlayerControl : MonoBehaviour
             rb.velocity = new Vector2(speed, rb.velocity.y);
             //Sprite flipping
             transform.localScale = new Vector2(1, 1);
+            
         }
 
         //Jumping
@@ -137,8 +138,6 @@ public class PlayerControl : MonoBehaviour
         }
 
     }
-
-
 
     //Checking if Hero is grounded (true or false)
     public bool IsGrounded()
