@@ -8,6 +8,7 @@ TagManager:
   - Friend
   - Collectable
   - EnemyNew
+  - PowerUp
   layers:
   - Default
   - TransparentFX

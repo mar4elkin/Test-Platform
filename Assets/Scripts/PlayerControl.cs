@@ -6,6 +6,8 @@ using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Diagnostics;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -21,9 +23,10 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float speed = 10f;
     [SerializeField] private float JumpForce = 10f;
     [SerializeField] private int cherries = 0;
-    [SerializeField] private Text cherryText;
+    [SerializeField] private TextMeshProUGUI cherryText;
     [SerializeField] private float hurtforce = 10f;
     [SerializeField] private AudioSource cherry;
+    [SerializeField] private AudioSource diamond;
     [SerializeField] private AudioSource footstep;
 
     //загрузчик сцены
@@ -59,6 +62,15 @@ public class PlayerControl : MonoBehaviour
             cherries += 1;
             cherryText.text = cherries.ToString();
         }
+
+        if(collision.tag == "PowerUp")
+        {
+            diamond.Play();
+            Destroy(collision.gameObject);
+            speed = 15f;
+            GetComponent<SpriteRenderer>().color = Color.red;
+            StartCoroutine(RestPower());
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -93,7 +105,7 @@ public class PlayerControl : MonoBehaviour
         }
         if (other.gameObject.tag == "Friend")
         {
-            Debug.Log("Friend");
+
         }
     }
 
@@ -138,7 +150,7 @@ public class PlayerControl : MonoBehaviour
         Vector2 direction = Vector2.down;
         float distance = 1.0f;
 
-        Debug.DrawRay(position, direction, Color.green);
+
         RaycastHit2D hit = Physics2D.Raycast(position, direction, distance, groundLayer);
         if (hit.collider != null)
         {
@@ -201,6 +213,13 @@ public class PlayerControl : MonoBehaviour
         footstep.Play();
     }
 
+    private IEnumerator RestPower()
+    {
+        yield return new WaitForSeconds(10);
+        speed = 10f;
+        GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
 
     //Enemy test
    // public void OnCollisionEnter2D(Collision2D collision)
@@ -211,7 +230,7 @@ public class PlayerControl : MonoBehaviour
        // }
        // if (collision.gameObject.tag == "Friend")
        // {
-       //     Debug.Log("Friend");
+
        // }
    // }
 }
