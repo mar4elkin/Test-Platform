@@ -15,16 +15,18 @@ public class Enemy : MonoBehaviour
         death = GetComponent<AudioSource>();
     }
 
+    //When player jumped on this enemy
     public void JumpedOn()
     {
-        anim.SetTrigger("Death");
-        death.Play();
-        rb.bodyType = RigidbodyType2D.Kinematic;
-        GetComponent<Collider2D>().enabled = false;
+        anim.SetTrigger("Death");//Death animation
+        death.Play(); //Play sound
+        rb.bodyType = RigidbodyType2D.Kinematic; //It have to don't let animation mooving, but it dosen't work
+        GetComponent<Collider2D>().enabled = false; //The same
     }
 
     private void Death()
     {
+        //Destroy enemy
         Destroy(this.gameObject);
     }
 }
