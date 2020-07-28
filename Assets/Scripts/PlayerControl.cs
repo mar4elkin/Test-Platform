@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Diagnostics;
+using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private AudioSource cherry;
     [SerializeField] private AudioSource diamond;
     [SerializeField] private AudioSource footstep;
+    [SerializeField] private int health;
+    [SerializeField] private Text healthAmmount;
 
     //загрузчик сцены
     public SceneLoader sceneLoader;
@@ -37,6 +40,7 @@ public class PlayerControl : MonoBehaviour
         //get player's Rigidbody and animator objects
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        healthAmmount.text = health.ToString();
 
         //некая ссылка на SceneLoader
         sceneLoader = FindObjectOfType<SceneLoader>();
@@ -96,8 +100,9 @@ public class PlayerControl : MonoBehaviour
             else
             {
                 state = State.hurt; //Set Hurt state
+                HandaleHealth(); //HP changer
                 //Players direction after hurt
-                if(other.gameObject.transform.position.x > transform.position.x)
+                if (other.gameObject.transform.position.x > transform.position.x)
                 {
                     //Enemy is to my right, I should be damaged and moved left
                     rb.velocity = new Vector2(-hurtforce, rb.velocity.y);
@@ -113,6 +118,16 @@ public class PlayerControl : MonoBehaviour
         if (other.gameObject.tag == "Friend")
         {
 
+        }
+    }
+
+    private void HandaleHealth()
+    {
+        health -= 1;
+        healthAmmount.text = health.ToString();
+        if (health <= 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name); //reload game
         }
     }
 
